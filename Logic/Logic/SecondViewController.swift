@@ -16,9 +16,9 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "contra", for: indexPath) as! VerdadTableViewCell
         
-        cell.premisa.text = todo[indexPath.row].nombre
-        cell.estado.text = String(todo[indexPath.row].estado)
-        if(todo[indexPath.row].estado){
+        cell.premisa.text = todo[indexPath.row].data.nombre
+        cell.estado.text = String(todo[indexPath.row].data.estado)
+        if(todo[indexPath.row].data.estado){
             cell.estado.textColor = UIColor.green
         }
         else{
@@ -203,11 +203,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
             
     }
-    func makeFalse(premisa: Formula) -> Formula{
-        var formula = premisa.makeFalse()
-        todo.append(formula)
-        return makeFalse(premisa: formula)
-    }
+    
 
    
 

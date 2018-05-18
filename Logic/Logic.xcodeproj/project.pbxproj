@@ -11,6 +11,7 @@
 		DC0003C320AC0DF4005B86F3 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0003C220AC0DF4005B86F3 /* TableViewCell.swift */; };
 		DC0003C520AC1F83005B86F3 /* ThirdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0003C420AC1F83005B86F3 /* ThirdViewController.swift */; };
 		DC0003C720AC841B005B86F3 /* VerdadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0003C620AC841B005B86F3 /* VerdadTableViewCell.swift */; };
+		DC00040720AE3EDE005B86F3 /* TablitaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC00040620AE3EDE005B86F3 /* TablitaViewController.swift */; };
 		DC37842420A8CE1C00453D0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37842320A8CE1C00453D0D /* AppDelegate.swift */; };
 		DC37842620A8CE1C00453D0D /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37842520A8CE1C00453D0D /* FirstViewController.swift */; };
 		DC37842820A8CE1C00453D0D /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37842720A8CE1C00453D0D /* SecondViewController.swift */; };
@@ -44,6 +45,7 @@
 		DC0003C220AC0DF4005B86F3 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		DC0003C420AC1F83005B86F3 /* ThirdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdViewController.swift; sourceTree = "<group>"; };
 		DC0003C620AC841B005B86F3 /* VerdadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerdadTableViewCell.swift; sourceTree = "<group>"; };
+		DC00040620AE3EDE005B86F3 /* TablitaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablitaViewController.swift; sourceTree = "<group>"; };
 		DC37842020A8CE1C00453D0D /* Logic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Logic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC37842320A8CE1C00453D0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC37842520A8CE1C00453D0D /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				DC0003BF20AC0B06005B86F3 /* Main.storyboard */,
+				DC00040620AE3EDE005B86F3 /* TablitaViewController.swift */,
 				DC37842320A8CE1C00453D0D /* AppDelegate.swift */,
 				DC37842520A8CE1C00453D0D /* FirstViewController.swift */,
 				DC37842720A8CE1C00453D0D /* SecondViewController.swift */,
@@ -281,6 +284,7 @@
 				DC37842420A8CE1C00453D0D /* AppDelegate.swift in Sources */,
 				DC37845420A8D11A00453D0D /* CollectionViewCell.swift in Sources */,
 				DC0003C520AC1F83005B86F3 /* ThirdViewController.swift in Sources */,
+				DC00040720AE3EDE005B86F3 /* TablitaViewController.swift in Sources */,
 				DC0003C320AC0DF4005B86F3 /* TableViewCell.swift in Sources */,
 				DC0003C720AC841B005B86F3 /* VerdadTableViewCell.swift in Sources */,
 				DC37845620ABD5DF00453D0D /* TableViewController.swift in Sources */,

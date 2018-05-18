@@ -15,18 +15,31 @@ class FirstViewController: UIViewController {
     @IBOutlet var clear: UIButton!
     @IBOutlet var output: UITextView!
     @IBOutlet var display: UITextField!
-    var formulas: Array<Formula> = Array()
-    var atomos: [Formula] = []
+    //var formulas: Array<Formula> = Array()
+    //var atomos: [Formula] = []
     var tablaV: [[Bool]] =  []
-    public var todo: [Formula] = []
+    //public var todo: [Formula] = []
+    var logica: Logica = Logica()
     var palabra: String = ""
-    var head: Formula = Formula(nombre: "")
+    //var head: Formula = Formula(nombre: "")
     var par = false
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         output.isEditable = false
+        var f1 = Data()
+        var f2 = f1
+        f1.estado = false
+        print(String(f1.estado))
+        print(String(f2.estado))
+        
+        var atomito: Atomo = Atomo()
+        atomito.data.append(Formula(nombre: "Prueba"))
+        var atomi2 = atomito.copy()
+        atomito.data[0].data.estado = false
+        print(String(atomito.data[0].data.estado))
+        print(String(atomi2.data[0].data.estado))
         
         
     }
@@ -78,39 +91,33 @@ class FirstViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if let destination = segue.destination as? TableViewController{
-            destination.formulas = formulas
-            destination.atomos = atomos
-            destination.cont = atomos.count
-            destination.premisa = palabra
+            destination.logica = logica
+            destination.cont = logica.atomos.data.count
         }
         else if let destino = segue.destination as? SecondViewController{
-            destino.todo = todo
+            destino.todo = logica.todo
             destino.palabra = palabra
-            destino.head = head
+            destino.head = logica.head
         }
     }
     
     @IBAction func equals(_ sender: Any) {
          palabra = display.text!
         //Limpia
-        todo.removeAll()
+        /*todo.removeAll()
         formulas.removeAll()
         atomos.removeAll()
+         */
+        logica.clear()
         tablaV.removeAll()
         output.text = ""
         //
         //output.text = palabra
-        head = formular(premisa: palabra)
-        for atomo in atomos {
-            todo.append(atomo)
-        }
-        for formulita in formulas{
-            todo.append(formulita)
-        }
-        
-        for formula in todo{
-            print(formula.nombre)
-            output.text! += "\n" + formula.nombre + " = " + String(formula.estado)
+        //logica = Logica(premisa: palabra)
+        logica.excecute(premisa: palabra)
+        for formula in logica.todo{
+            print(formula.data.nombre)
+            output.text! += "\n" + formula.data.nombre + " = " + String(formula.data.estado)
         }
         
         
@@ -141,9 +148,7 @@ class FirstViewController: UIViewController {
         display.text!.append("<=>")
     }
     @IBAction func clear(_ sender: Any) {
-        todo.removeAll()
-        formulas.removeAll()
-        atomos.removeAll()
+        logica.clear()
         tablaV.removeAll()
         display.text = ""
         output.text = ""
@@ -151,6 +156,173 @@ class FirstViewController: UIViewController {
     }
     @IBAction func borrar(_ sender: Any) {
         display.text!.removeLast()
+    }
+    
+    
+    
+    
+}
+
+struct Data {
+    var nombre:String = ""
+    var estado:Bool = true
+    var historial: [Bool] = []
+}
+
+class Formula {
+    
+    var data: Data = Data()
+    
+    init(nombre: String, estado: Bool){
+        self.data.nombre = nombre
+        self.data.estado = estado
+    }
+    
+    init(nombre: String){
+        self.data.nombre = nombre
+        self.data.estado = true
+    }
+    init(data: Data){
+        self.data = data
+    }
+    func getData() -> Data{
+        return self.data
+    }
+    
+    
+    
+    func makeTrue(){
+        data.estado = true
+    }
+    func makeFalse(){
+        data.estado = false
+    }
+}
+class Conjuncion: Formula{
+    var izq: Formula
+    var der: Formula
+    init(izq: Formula, der: Formula){
+        var estado: Bool
+        self.izq = izq
+        self.der = der
+        if (izq.data.estado && der.data.estado){
+            estado = true
+        }
+        else{
+            estado = false
+        }
+        super.init(nombre: izq.data.nombre + "^" + der.data.nombre, estado: estado)
+    }
+    
+    
+    
+}
+class Disyuncion: Formula{
+    var izq: Formula
+    var der: Formula
+    //Arreglo de Formulas
+    init(izq: Formula, der: Formula){
+        var estado: Bool
+        self.izq = izq
+        self.der = der
+        if (!izq.data.estado && !der.data.estado){
+            estado = false
+        }
+        else{
+            estado = true
+        }
+        super.init(nombre: izq.data.nombre + "v" + der.data.nombre, estado: estado)
+    }
+    
+}
+class Neg: Formula{
+    var origen: Formula
+    init(formula: Formula) {
+        origen = formula
+        super.init(nombre: "¬"+formula.data.nombre, estado: !formula.data.estado)
+    }
+   
+}
+
+class Imp: Formula{
+    var ant: Formula
+    var cons: Formula
+    init(ant: Formula, cons: Formula){
+        var estado: Bool
+        self.ant = ant
+        self.cons = cons
+        if(ant.data.estado && !cons.data.estado){
+            estado = false
+        }
+        else{
+            estado = true
+        }
+        super.init(nombre: ant.data.nombre + "->" + cons.data.nombre, estado: estado)
+    }
+  
+}
+class Equi: Formula{
+    var izq: Imp
+    var der: Imp
+    init(prim: Formula, secu: Formula){
+        var estado: Bool
+        self.izq = Imp(ant: prim, cons: secu)
+        self.der = Imp(ant: secu, cons: prim)
+        if (izq.data.estado == der.data.estado){
+            estado = true
+        }
+        else{
+            estado = false
+        }
+        super.init(nombre: prim.data.nombre + "<=>" + secu.data.nombre, estado: estado)
+    }
+   
+}
+
+
+
+struct Tabla {
+    var logica = Logica()
+    init(logic: Logica) {
+        self.logica = logic
+    }
+}
+struct Atomo {
+    var data: Array<Formula> = Array()
+    
+    func copy() -> Atomo{
+        var tmp = Atomo()
+        for formula in self.data{
+            let ftmp = formula.getData()
+            tmp.data.append(Formula(data: ftmp))
+        }
+        return tmp
+        
+    }
+}
+
+
+class Logica {
+    var formulas: Array<Formula> = Array()
+    //var atomos: Array<Formula> = Array()
+    var atomos = Atomo()
+    var todo: Array<Formula> = Array()
+    var tablita: [Tabla] = []
+    var contra: [Tabla] = []
+    var head: Formula = Formula(nombre: "")
+    
+    init(){
+        self.unir()
+    }
+    
+    init(premisa: String) {
+        head = self.formular(premisa: premisa)
+        self.unir()
+    }
+    init(premisa: String, atomos: [Formula]){
+        self.atomos.data = atomos
+        head = self.formular(premisa: premisa)
+        self.unir()
     }
     func formular(premisa: String) -> Formula {
         var word: String.Index
@@ -181,7 +353,7 @@ class FirstViewController: UIViewController {
                 
                 return equi
             }
-            //Imp
+                //Imp
             else if(izq.contains(">")){
                 
                 (word = premisa.index(of:">") ?? premisa.endIndex)
@@ -193,8 +365,8 @@ class FirstViewController: UIViewController {
                 
                 return imp
             }
-            
-            //Conjuncion
+                
+                //Conjuncion
             else if(izq.contains("^")){
                 
                 (word = premisa.index(of:"^") ?? premisa.endIndex)
@@ -232,17 +404,17 @@ class FirstViewController: UIViewController {
                 
             else{
                 let formu = Formula(nombre: premisa)
-                let i = contains(atomos: atomos, element: formu)
+                let i = contains(atomos: atomos.data, element: formu)
                 if (i != -1){
-                    return atomos[i]
+                    return atomos.data[i]
                 }
                 else{
-                    atomos.append(formu)
+                    atomos.data.append(formu)
                     return formu
                 }
             }
         }
-        //Equivalencia
+            //Equivalencia
         else if(premisa.contains("<")){
             
             (word = premisa.index(of:"<") ?? premisa.endIndex)
@@ -255,7 +427,7 @@ class FirstViewController: UIViewController {
             
             return equi
         }
-        //Imp
+            //Imp
         else if(premisa.contains(">")){
             
             (word = premisa.index(of:">") ?? premisa.endIndex)
@@ -267,7 +439,7 @@ class FirstViewController: UIViewController {
             
             return imp
         }
-        //Conjuncion
+            //Conjuncion
         else if(premisa.contains("^")){
             
             (word = premisa.index(of:"^") ?? premisa.endIndex)
@@ -302,16 +474,16 @@ class FirstViewController: UIViewController {
             return antiformula
             
         }
-        
+            
         else{
             let formu = Formula(nombre: premisa)
             //todo.append(formu)
-            let i = contains(atomos: atomos, element: formu)
+            let i = contains(atomos: atomos.data, element: formu)
             if (i != -1){
-                return atomos[i]
+                return atomos.data[i]
             }
             else{
-                atomos.append(formu)
+                atomos.data.append(formu)
                 return formu
             }
             
@@ -320,209 +492,86 @@ class FirstViewController: UIViewController {
     }
     func contains(atomos: Array<Formula>, element: Formula) -> Int{
         for (index,atomo) in atomos.enumerated(){
-            if(atomo.nombre == element.nombre){
+            if(atomo.data.nombre == element.data.nombre){
                 return index
             }
         }
         return -1
     }
     
-    
-    
-}
-
-class Formula {
-    var nombre:String
-    var estado:Bool
-    
-    init(nombre: String, estado: Bool){
-        self.nombre = nombre
-        self.estado = estado
+    func excecute(premisa: String){
+        head = self.formular(premisa: premisa)
+        self.unir()
     }
+    func excecute(){
+        formulas.removeAll()
+        todo.removeAll()
+        self.formular(premisa: head.data.nombre)
+        self.unir()
+    }
+    /*func excecute(atm: [Formula]){
+        let atomostmp = atomos
+        atomos = atm
+        formulas.removeAll()
+        todo.removeAll()
+        self.formular(premisa: head.nombre)
+        self.unir()
+        atomos = atomostmp
+    }*/
     
-    init(nombre: String){
-        self.nombre = nombre
-        self.estado = true
+    func clear(){
+        atomos.data.removeAll()
+        formulas.removeAll()
+        todo.removeAll()
     }
-    func makeTrue() -> Formula{
-        estado = true
-        return self
-    }
-    func makeFalse() -> Formula{
-        estado = false
-        return self
-    }
-}
-class Conjuncion: Formula{
-    var izq: Formula
-    var der: Formula
-    init(izq: Formula, der: Formula){
-        var estado: Bool
-        self.izq = izq
-        self.der = der
-        if (izq.estado && der.estado){
-            estado = true
+    func unir(){
+        for atomo in atomos.data {
+            todo.append(atomo)
         }
-        else{
-            estado = false
+        for formulita in formulas{
+            todo.append(formulita)
         }
-        super.init(nombre: izq.nombre + "^" + der.nombre, estado: estado)
     }
-    override func makeTrue() -> Formula{
-        izq.estado = true
-        der.estado = true
-        return self
+    
+    func recorrer(){
         
+        recorrer(atmp: atomos.copy(), index: 0)
     }
-    override func makeFalse() -> Formula{
-        if(estado){
+    
+    func recorrer(atmp: Atomo ,index: Int) {
+        let ato = atmp.copy()
+        if(index < 0){
+            return
+        }
+        let i = atomos.data.count - 1
+        if(index < i){
+            //atomos[index].makeTrue()
+            //atomos[index].estado = true
+            ato.data[index].data.estado = true
+            recorrer(atmp: ato, index: index + 1)
+            var ato2 = ato.copy()
+            ato2.data[index].data.estado = false
+            recorrer(atmp: ato2, index: index + 1)
+        }
+        else if(index == i){
+            ato.data[index].data.estado = true
+            //self.excecute()
+            let l1 = Tabla(logic: Logica(premisa: self.head.data.nombre, atomos: ato.data))
+            let lt = l1
+            tablita.append(lt)
+            if(!lt.logica.head.data.estado){
+                contra.append(lt)
+            }
             
+            var ato2 = ato.copy()
+            ato2.data[index].data.estado = false
+            //self.excecute()
+            let l2 = Tabla(logic: Logica(premisa: self.head.data.nombre, atomos: ato2.data))
+            let lf = l2
+            tablita.append(lf)
         }
-        if(izq.estado && !der.estado){
-            izq.makeTrue()
-            der.makeFalse()
-        }
-        else if (!izq.estado && der.estado){
-            izq.makeFalse()
-            der.makeTrue()
-        }
-        else if (!izq.estado && !der.estado){
-            izq.makeFalse()
-            der.makeFalse()
-        }
+        return
         
-        return self
-        
-    }
-}
-class Disyuncion: Formula{
-    var izq: Formula
-    var der: Formula
-    //Arreglo de Formulas
-    init(izq: Formula, der: Formula){
-        var estado: Bool
-        self.izq = izq
-        self.der = der
-        if (!izq.estado && !der.estado){
-            estado = false
-        }
-        else{
-            estado = true
-        }
-        super.init(nombre: izq.nombre + "v" + der.nombre, estado: estado)
-    }
-    override func makeTrue() -> Formula{
-        if(izq.estado && !der.estado){
-            izq.makeTrue()
-            der.makeFalse()
-        }
-        else if (!izq.estado && der.estado){
-            izq.makeFalse()
-            der.makeTrue()
-        }
-        else{
-            izq.makeTrue()
-            der.makeTrue()
-        }
-        
-        return self
-        
-    }
-    override func makeFalse() -> Formula{
-        izq.makeFalse()
-        der.makeFalse()
-        return self
-        
-    }
-}
-class Neg: Formula{
-    var origen: Formula
-    init(formula: Formula) {
-        origen = formula
-        super.init(nombre: "¬"+formula.nombre, estado: !formula.estado)
-    }
-    override func makeTrue() -> Formula {
-        origen.makeFalse()
-        return self
-    }
-    override func makeFalse() -> Formula {
-        origen.makeTrue()
-        return self
-    }
-}
-
-class Imp: Formula{
-    var ant: Formula
-    var cons: Formula
-    init(ant: Formula, cons: Formula){
-        var estado: Bool
-        self.ant = ant
-        self.cons = cons
-        if(ant.estado && !cons.estado){
-            estado = false
-        }
-        else{
-            estado = true
-        }
-        super.init(nombre: ant.nombre + "->" + cons.nombre, estado: estado)
-    }
-    override func makeFalse() -> Formula {
-        ant.makeTrue()
-        cons.makeFalse()
-        return self
-    }
-    override func makeTrue() -> Formula {
-        if(!ant.estado && cons.estado){
-            ant.makeFalse()
-            cons.makeTrue()
-        }
-        else if (!ant.estado && !cons.estado){
-            ant.makeFalse()
-            cons.makeFalse()
-        }
-        else{
-            ant.makeTrue()
-            cons.makeTrue()
-        }
-        return self
-    }
-}
-class Equi: Formula{
-    var izq: Imp
-    var der: Imp
-    init(prim: Formula, secu: Formula){
-        var estado: Bool
-        self.izq = Imp(ant: prim, cons: secu)
-        self.der = Imp(ant: secu, cons: prim)
-        if (izq.estado == der.estado){
-            estado = true
-        }
-        else{
-            estado = false
-        }
-        super.init(nombre: prim.nombre + "<=>" + secu.nombre, estado: estado)
-    }
-    override func makeTrue() -> Formula {
-        if(izq.estado && der.estado){
-            izq.makeTrue()
-            der.makeTrue()
-        }
-        else{
-            izq.makeFalse()
-            der.makeFalse()
-        }
-        return self
-    }
-    override func makeFalse() -> Formula {
-        if(!izq.estado && der.estado){
-            izq.makeFalse()
-            der.makeTrue()
-        }
-        else if (izq.estado && !der.estado){
-            izq.makeTrue()
-            der.makeFalse()
-        }
-        return self
     }
 }
 

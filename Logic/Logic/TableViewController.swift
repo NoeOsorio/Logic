@@ -11,12 +11,12 @@ import UIKit
 class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return atomos.count
+        return logica.atomos.data.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "valores", for: indexPath) as! TableViewCell
-        cell.title.text = atomos[indexPath.row].nombre
+        cell.title.text = logica.atomos.data[indexPath.row].data.nombre
         cell.estado.isOn = true
         
         return cell
@@ -26,16 +26,15 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         var celda = tableView.cellForRow(at: indexPath) as! TableViewCell
         
         if(celda.estado.isOn){
-            atomos[indexPath.row].estado = true
+            logica.atomos.data[indexPath.row].data.estado = true
         }
         else{
-            atomos[indexPath.row].estado = false
+            logica.atomos.data[indexPath.row].data.estado = false
         }
     }
     var index = IndexPath()
-    var formulas: Array<Formula> = Array()
-    var atomos: Array<Formula> = Array()
-    var premisa = String()
+    var logica: Logica = Logica()
+    //var premisa = String()
     var cont: Int = 0
     
     
@@ -43,32 +42,40 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet var TableV: UITableView!
     @IBAction func iniciar(_ sender: Any) {
         
-        for (index,atomo) in atomos.enumerated(){
+        for (index,atomo) in logica.atomos.data.enumerated(){
             let indexPath = IndexPath(row: index, section: 0)
             let cell = TableV.cellForRow(at: indexPath) as! TableViewCell
             if(cell.estado.isOn){
-                atomo.estado = true
+                atomo.data.estado = true
             }
             else{
-                atomo.estado = false
+                atomo.data.estado = false
             }
         }
         
+        performSegue(withIdentifier: "formalizar", sender: self)
+    }
+    
+    
+    @IBAction func Tabla(_ sender: Any) {
         performSegue(withIdentifier: "tabla", sender: self)
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? ThirdViewController{
-            destination.formulas = formulas
-            destination.atomos = atomos
-            destination.cont = atomos.count
-            destination.premisa = premisa
+            destination.logica = logica
+            destination.cont = logica.atomos.data.count
+            destination.premisa = logica.head.data.nombre
+        }
+        else if let destino = segue.destination as? TablitaViewController{
+            destino.logica = Logica(premisa: logica.head.data.nombre)
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(formulas.count)
+        print(logica.formulas.count)
         print(cont)
         
     }

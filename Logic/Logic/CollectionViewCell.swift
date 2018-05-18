@@ -9,6 +9,8 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
+
     @IBOutlet var title: UILabel!
+    
     
 }
