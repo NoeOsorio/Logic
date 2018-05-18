@@ -12,10 +12,10 @@
 		DC0003C520AC1F83005B86F3 /* ThirdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0003C420AC1F83005B86F3 /* ThirdViewController.swift */; };
 		DC0003C720AC841B005B86F3 /* VerdadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0003C620AC841B005B86F3 /* VerdadTableViewCell.swift */; };
 		DC00040720AE3EDE005B86F3 /* TablitaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC00040620AE3EDE005B86F3 /* TablitaViewController.swift */; };
+		DC1CEFCC20AED0DB00995BE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC1CEFCB20AED0DA00995BE8 /* Assets.xcassets */; };
 		DC37842420A8CE1C00453D0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37842320A8CE1C00453D0D /* AppDelegate.swift */; };
 		DC37842620A8CE1C00453D0D /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37842520A8CE1C00453D0D /* FirstViewController.swift */; };
 		DC37842820A8CE1C00453D0D /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37842720A8CE1C00453D0D /* SecondViewController.swift */; };
-		DC37842D20A8CE1C00453D0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC37842C20A8CE1C00453D0D /* Assets.xcassets */; };
 		DC37843020A8CE1C00453D0D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC37842E20A8CE1C00453D0D /* LaunchScreen.storyboard */; };
 		DC37843B20A8CE1D00453D0D /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37843A20A8CE1D00453D0D /* LogicTests.swift */; };
 		DC37844620A8CE1D00453D0D /* LogicUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37844520A8CE1D00453D0D /* LogicUITests.swift */; };
@@ -46,11 +46,11 @@
 		DC0003C420AC1F83005B86F3 /* ThirdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdViewController.swift; sourceTree = "<group>"; };
 		DC0003C620AC841B005B86F3 /* VerdadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerdadTableViewCell.swift; sourceTree = "<group>"; };
 		DC00040620AE3EDE005B86F3 /* TablitaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablitaViewController.swift; sourceTree = "<group>"; };
+		DC1CEFCB20AED0DA00995BE8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DC37842020A8CE1C00453D0D /* Logic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Logic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC37842320A8CE1C00453D0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC37842520A8CE1C00453D0D /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		DC37842720A8CE1C00453D0D /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
-		DC37842C20A8CE1C00453D0D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DC37842F20A8CE1C00453D0D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DC37843120A8CE1C00453D0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC37843620A8CE1D00453D0D /* LogicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LogicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,8 +115,8 @@
 				DC00040620AE3EDE005B86F3 /* TablitaViewController.swift */,
 				DC37842320A8CE1C00453D0D /* AppDelegate.swift */,
 				DC37842520A8CE1C00453D0D /* FirstViewController.swift */,
+				DC1CEFCB20AED0DA00995BE8 /* Assets.xcassets */,
 				DC37842720A8CE1C00453D0D /* SecondViewController.swift */,
-				DC37842C20A8CE1C00453D0D /* Assets.xcassets */,
 				DC37842E20A8CE1C00453D0D /* LaunchScreen.storyboard */,
 				DC37843120A8CE1C00453D0D /* Info.plist */,
 				DC37845320A8D11A00453D0D /* CollectionViewCell.swift */,
@@ -254,8 +254,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC0003C120AC0B06005B86F3 /* Main.storyboard in Resources */,
+				DC1CEFCC20AED0DB00995BE8 /* Assets.xcassets in Resources */,
 				DC37843020A8CE1C00453D0D /* LaunchScreen.storyboard in Resources */,
-				DC37842D20A8CE1C00453D0D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

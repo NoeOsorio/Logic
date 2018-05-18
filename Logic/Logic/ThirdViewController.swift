@@ -31,6 +31,7 @@ class ThirdViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return cell
     }
     
+    
 
     var logica: Logica = Logica()
     var premisa = String()
