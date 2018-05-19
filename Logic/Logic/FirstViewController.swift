@@ -87,6 +87,8 @@ class FirstViewController: UIViewController {
         logica.clear()
         output.text = ""
         logica.excecute(premisa: palabra)
+        logica = logica.getContra()
+        logica.excecute()
         for formula in logica.todo{
             print(formula.data.nombre)
             output.text! += "\n" + formula.data.nombre + " = " + String(formula.data.estado)
@@ -114,9 +116,8 @@ class FirstViewController: UIViewController {
             destination.cont = logica.atomos.data.count
         }
         else if let destino = segue.destination as? SecondViewController{
-            destino.todo = logica.todo
-            destino.palabra = palabra
-            destino.head = logica.head
+            destino.logica = logica.getContra()
+            
         }
     }
     
@@ -549,6 +550,12 @@ class Logica {
         self.formular(premisa: head.data.nombre)
         self.unir()
     }
+    func excecuteContra(){
+        formulas.removeAll()
+        todo.removeAll()
+        self.contradecir(premisa: head.data.nombre)
+        self.unir()
+    }
     /*func excecute(atm: [Formula]){
         let atomostmp = atomos
         atomos = atm
@@ -574,7 +581,8 @@ class Logica {
     }
     
     func recorrer(){
-        
+        self.tablita.removeAll()
+        self.contra.removeAll()
         recorrer(atmp: atomos.copy(), index: 0)
     }
     
@@ -614,6 +622,192 @@ class Logica {
             }
         }
         return
+        
+    }
+    func esContra() -> Bool{
+        self.recorrer()
+        if(self.contra.isEmpty){
+            return false
+        }
+        else{
+            return true
+        }
+    }
+    func getContra() -> Logica{
+        if(self.esContra()){
+            contra[0].logica.excecuteContra()
+            return contra[0].logica
+        }
+        else{
+            return self
+        }
+    }
+    func contradecir(premisa: String) -> Formula {
+        var word: String.Index
+        var izq = ""
+        
+        if (premisa.contains("(")) {
+            if (premisa.first == "(" && (premisa.index(of: ")") == premisa.endIndex)){
+                
+                var nuevo = String(premisa.dropFirst())
+                nuevo = String(nuevo.dropLast())
+                let formu = contradecir(premisa: nuevo)
+                //formulas.append(formu)
+                return formu
+            }
+            let inicio = premisa.index(of:"(")!
+            let fin = premisa.index(of: ")")!
+            izq = String(premisa.prefix(upTo: inicio) + String(premisa.suffix(from: fin)))
+            
+            //Equivalencia
+            if(izq.contains("<")){
+                
+                (word = premisa.index(of:"<") ?? premisa.endIndex)
+                let izq = String(premisa[..<word])
+                (word = premisa.index(of:">") ?? premisa.endIndex)
+                let der = String(premisa.suffix(from: word).dropFirst())
+                //Crea una equivalencia
+                let equi = Equi(prim: contradecir(premisa: izq), secu: contradecir(premisa: der))
+                formulas.append(equi)
+                
+                return equi
+            }
+                //Imp
+            else if(izq.contains(">")){
+                
+                (word = premisa.index(of:">") ?? premisa.endIndex)
+                let izq = String((premisa[..<word]).dropLast())
+                let der = String(premisa.suffix(from: word).dropFirst())
+                //Crea una implicacion
+                let imp = Imp(ant: contradecir(premisa: izq), cons: contradecir(premisa: der))
+                formulas.append(imp)
+                
+                return imp
+            }
+                
+                //Conjuncion
+            else if(izq.contains("^")){
+                
+                (word = premisa.index(of:"^") ?? premisa.endIndex)
+                let izq = String(premisa[..<word])
+                let der = String(premisa.suffix(from: word).dropFirst())
+                //Crea una conjuncion
+                let Conj = Conjuncion(izq: contradecir(premisa: izq), der: contradecir(premisa: der))
+                formulas.append(Conj)
+                
+                return Conj
+            }
+                //Disyuncion
+            else if(izq.contains("v")){
+                (word = premisa.index(of:"v") ?? premisa.endIndex)
+                let izq = String(premisa[..<word])
+                let der = String(premisa.suffix(from: word).dropFirst())
+                //Crea una disyuncion
+                let Disy = Disyuncion(izq: contradecir(premisa: izq), der: contradecir(premisa: der))
+                formulas.append(Disy)
+                //todo.append(Disy)
+                return Disy
+            }
+                //Negacion
+            else if(izq.contains("¬")){
+                (word = premisa.index(of:"¬") ?? premisa.endIndex)
+                //Formula original
+                let original = String(premisa.dropFirst())
+                let antiformula = Neg(formula: contradecir(premisa: original))
+                formulas.append(antiformula)
+                //todo.append(antiformula)
+                
+                return antiformula
+                
+            }
+                
+            else if (premisa.first == "(" && premisa.last == ")"){
+                
+                var nuevo = String(premisa.dropFirst())
+                nuevo = String(nuevo.dropLast())
+                let formu = contradecir(premisa: nuevo)
+                //formulas.append(formu)
+                return formu
+            }
+                
+            else{
+                let formu = Formula(nombre: premisa)
+                
+                    atomos.data.append(formu)
+                    return formu
+                
+            }
+        }
+            //Equivalencia
+        else if(premisa.contains("<")){
+            
+            (word = premisa.index(of:"<") ?? premisa.endIndex)
+            let izq = String(premisa[..<word])
+            (word = premisa.index(of:">") ?? premisa.endIndex)
+            let der = String(premisa.suffix(from: word).dropFirst())
+            //Crea una equivalencia
+            let equi = Equi(prim: contradecir(premisa: izq), secu: contradecir(premisa: der))
+            formulas.append(equi)
+            
+            return equi
+        }
+            //Imp
+        else if(premisa.contains(">")){
+            
+            (word = premisa.index(of:">") ?? premisa.endIndex)
+            let izq = String((premisa[..<word]).dropLast())
+            let der = String(premisa.suffix(from: word).dropFirst())
+            //Crea una implicacion
+            let imp = Imp(ant: contradecir(premisa: izq), cons: contradecir(premisa: der))
+            formulas.append(imp)
+            
+            return imp
+        }
+            //Conjuncion
+        else if(premisa.contains("^")){
+            
+            (word = premisa.index(of:"^") ?? premisa.endIndex)
+            let izq = String(premisa[..<word])
+            let der = String(premisa.suffix(from: word).dropFirst())
+            //Crea una conjuncion
+            let Conj = Conjuncion(izq: contradecir(premisa: izq), der: contradecir(premisa: der))
+            formulas.append(Conj)
+            
+            return Conj
+        }
+            //Disyuncion
+        else if(premisa.contains("v")){
+            (word = premisa.index(of:"v") ?? premisa.endIndex)
+            let izq = String(premisa[..<word])
+            let der = String(premisa.suffix(from: word).dropFirst())
+            //Crea una disyuncion
+            let Disy = Disyuncion(izq: contradecir(premisa: izq), der: contradecir(premisa: der))
+            formulas.append(Disy)
+            //todo.append(Disy)
+            return Disy
+        }
+            //Negacion
+        else if(premisa.contains("¬")){
+            (word = premisa.index(of:"¬") ?? premisa.endIndex)
+            //Formula original
+            let original = String(premisa.dropFirst())
+            let antiformula = Neg(formula: contradecir(premisa: original))
+            formulas.append(antiformula)
+            //todo.append(antiformula)
+            
+            return antiformula
+            
+        }
+            
+        else{
+            let formu = Formula(nombre: premisa)
+            //todo.append(formu)
+            
+                atomos.data.append(formu)
+                return formu
+            
+            
+        }
         
     }
     
