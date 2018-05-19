@@ -27,6 +27,7 @@ class TablitaViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         if(indexPath.section == 0){
             cell.title.text = tabla[indexPath.section].logica.todo[indexPath.row].data.nombre
+            cell.title.textColor = UIColor.black
             
         }
         else{
@@ -50,16 +51,11 @@ class TablitaViewController: UIViewController, UICollectionViewDelegate, UIColle
 
     
     var logica = Logica()
-    var header: [String] = []
     var tabla: [Tabla] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         logica.recorrer()
-        for formula in logica.todo{
-            header.append(formula.data.nombre)
-            
-        }
         tabla = logica.tablita
         
     }

@@ -45,6 +45,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         for (index,atomo) in logica.atomos.data.enumerated(){
             let indexPath = IndexPath(row: index, section: 0)
             let cell = TableV.cellForRow(at: indexPath) as! TableViewCell
+            
             if(cell.estado.isOn){
                 atomo.data.estado = true
             }

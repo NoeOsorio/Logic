@@ -82,16 +82,35 @@ class FirstViewController: UIViewController {
     //Funciones
     
     @IBAction func contra(_ sender: Any) {
+        palabra = display.text!
+        
+        logica.clear()
+        output.text = ""
+        logica.excecute(premisa: palabra)
+        for formula in logica.todo{
+            print(formula.data.nombre)
+            output.text! += "\n" + formula.data.nombre + " = " + String(formula.data.estado)
+        }
         performSegue(withIdentifier: "contra", sender: self)
     }
     @IBAction func tabla(_ sender: Any) {
+        palabra = display.text!
+        
+        logica.clear()
+        output.text = ""
+        logica.excecute(premisa: palabra)
+        for formula in logica.todo{
+            print(formula.data.nombre)
+            output.text! += "\n" + formula.data.nombre + " = " + String(formula.data.estado)
+        }
         //performSegue(withIdentifier: "nexo", sender: self)
         performSegue(withIdentifier: "valor", sender: self)
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if let destination = segue.destination as? TableViewController{
-            destination.logica = logica
+            let atm = logica.atomos.copy()
+            destination.logica = Logica(premisa: logica.head.data.nombre, atomos: atm)
             destination.cont = logica.atomos.data.count
         }
         else if let destino = segue.destination as? SecondViewController{
@@ -103,17 +122,9 @@ class FirstViewController: UIViewController {
     
     @IBAction func equals(_ sender: Any) {
          palabra = display.text!
-        //Limpia
-        /*todo.removeAll()
-        formulas.removeAll()
-        atomos.removeAll()
-         */
+        
         logica.clear()
-        tablaV.removeAll()
         output.text = ""
-        //
-        //output.text = palabra
-        //logica = Logica(premisa: palabra)
         logica.excecute(premisa: palabra)
         for formula in logica.todo{
             print(formula.data.nombre)
@@ -166,7 +177,7 @@ class FirstViewController: UIViewController {
 struct Data {
     var nombre:String = ""
     var estado:Bool = true
-    var historial: [Bool] = []
+    var historial: [Data] = []
 }
 
 class Formula {
@@ -261,13 +272,25 @@ class Imp: Formula{
     }
   
 }
+
+struct Truth {
+    var izq: Data
+    var der: Data
+    init(izq: Data, der: Data){
+        self.izq = izq
+        self.der = der
+    }
+}
+
 class Equi: Formula{
     var izq: Imp
     var der: Imp
+    var truth: [Truth] = []
     init(prim: Formula, secu: Formula){
         var estado: Bool
         self.izq = Imp(ant: prim, cons: secu)
         self.der = Imp(ant: secu, cons: prim)
+        self.truth.append(Truth(izq: izq.data, der: der.data))
         if (izq.data.estado == der.data.estado){
             estado = true
         }
@@ -275,7 +298,13 @@ class Equi: Formula{
             estado = false
         }
         super.init(nombre: prim.data.nombre + "<=>" + secu.data.nombre, estado: estado)
+        let dataB = self.data
+        self.data.historial.append(dataB)
+        
+        
     }
+    
+    
    
 }
 
@@ -319,8 +348,8 @@ class Logica {
         head = self.formular(premisa: premisa)
         self.unir()
     }
-    init(premisa: String, atomos: [Formula]){
-        self.atomos.data = atomos
+    init(premisa: String, atomos: Atomo){
+        self.atomos = atomos.copy()
         head = self.formular(premisa: premisa)
         self.unir()
     }
@@ -329,7 +358,8 @@ class Logica {
         var izq = ""
         
         if (premisa.contains("(")) {
-            if (premisa.first == "(" && premisa.last == ")"){
+            if (premisa.first == "(" && (premisa.index(of: ")") == premisa.endIndex)){
+                
                 var nuevo = String(premisa.dropFirst())
                 nuevo = String(nuevo.dropLast())
                 let formu = formular(premisa: nuevo)
@@ -400,6 +430,15 @@ class Logica {
                 
                 return antiformula
                 
+            }
+                
+            else if (premisa.first == "(" && premisa.last == ")"){
+                
+                var nuevo = String(premisa.dropFirst())
+                nuevo = String(nuevo.dropLast())
+                let formu = formular(premisa: nuevo)
+                //formulas.append(formu)
+                return formu
             }
                 
             else{
@@ -499,6 +538,7 @@ class Logica {
         return -1
     }
     
+    
     func excecute(premisa: String){
         head = self.formular(premisa: premisa)
         self.unir()
@@ -556,7 +596,7 @@ class Logica {
         else if(index == i){
             ato.data[index].data.estado = true
             //self.excecute()
-            let l1 = Tabla(logic: Logica(premisa: self.head.data.nombre, atomos: ato.data))
+            let l1 = Tabla(logic: Logica(premisa: self.head.data.nombre, atomos: ato))
             let lt = l1
             tablita.append(lt)
             if(!lt.logica.head.data.estado){
@@ -566,13 +606,17 @@ class Logica {
             var ato2 = ato.copy()
             ato2.data[index].data.estado = false
             //self.excecute()
-            let l2 = Tabla(logic: Logica(premisa: self.head.data.nombre, atomos: ato2.data))
+            let l2 = Tabla(logic: Logica(premisa: self.head.data.nombre, atomos: ato2))
             let lf = l2
             tablita.append(lf)
+            if(!lf.logica.head.data.estado){
+                contra.append(lf)
+            }
         }
         return
         
     }
+    
 }
 
 
